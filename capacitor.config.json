@@ -1,0 +1,6 @@
+{
+  "appId": "io.gos.com",
+  "appName": "gos",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
