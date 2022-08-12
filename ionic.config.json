@@ -1,0 +1,7 @@
+{
+  "name": "gos",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
