@@ -1,0 +1,31 @@
+<ion-header mode="ios" class="ion-no-border">
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="2">
+          <ion-back-button text="" class="align-v"></ion-back-button>
+        </ion-col>
+        <ion-col size="8">
+          <h1>{{order?.['order-type']['description']}}</h1>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+  <app-order-detail [order] = "order"></app-order-detail>
+  <form class="box-shadow" (ngSubmit)="updateOrder()" [formGroup]="orderForm">
+    <ion-item lines="none" *ngIf="orderStatus[order?.['order-status']['id']]?.['description'] === 'Asignada'">
+      <ion-label position="stacked" color="primary">Observación</ion-label>
+      <ion-textarea placeholder="Por favor adicione una observación..." formControlName="observation"></ion-textarea>
+    </ion-item>
+    <div *ngIf="(observation.dirty || observation.touched) && observation.errors" class="errors">
+      <span *ngIf="observation.errors?.required">La observacion es requerida</span>
+      <span *ngIf="observation.errors?.minlength">La observacion debe tener al menos 6 caracteres</span>
+    </div>   
+    <ion-button type="submit" expand="block" shape="round"  mode="ios" [disabled]="!orderForm.valid && !_isSubmitted">Ejecutar Orden</ion-button>
+  </form>
+</ion-content>
+

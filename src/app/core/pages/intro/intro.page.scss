@@ -1,0 +1,20 @@
+ion-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.intro-container {
+    height: 100%;
+    font-family: 'Raleway', sans-serif!important;
+    h1 {
+        font-weight: 800;
+        color: #002054;
+    }
+
+    p {
+        color: #707576;
+        font-weight: 500;
+    }
+}

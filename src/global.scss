@@ -1,0 +1,70 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import "~@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+/*Fonts*/
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;600;800;900&family=Roboto:wght@100;300;400;500;900&display=swap");
+
+.errors {
+    font-size: small;
+    color: #fff;
+    background: var(--ion-color-danger);
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.modal-items{
+    --height: 100%;
+    --min-height: 45%;
+    --max-height: 70%;
+    --width: 94%;
+    --border-radius: 10px;
+}
+
+.modal-min {
+    --height: 40%;
+    --border-radius: 10px;
+    padding: 25px;
+}
+
+.modal-filters{
+    --height: 95%;
+    --width: 95%;
+    --border-radius: 10px;
+}
+
+.main {
+    -webkit-box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 16%);
+    box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 15%);
+    margin: 5px 0px;
+    border-radius: 7px;
+    border: 0px;
+}
+
+ion-header{
+    -webkit-box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 16%);
+    box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 15%);
+}

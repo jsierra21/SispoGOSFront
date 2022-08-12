@@ -1,0 +1,29 @@
+.welcome-container{
+    margin-bottom: 21px;
+
+    img{
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+}
+ion-slide {
+    margin: 0px;
+    width: 200px;
+}
+
+h2, h6{
+    font-family: 'Raleway', sans-serif!important;
+    color: #002054;
+}
+
+h6 {
+    font-weight: 600;
+}
+
+
+.orders-container {
+    margin-top: 15px;
+}

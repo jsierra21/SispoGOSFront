@@ -1,0 +1,33 @@
+<ion-header mode="ios" class="ion-no-border">
+  <ion-toolbar>
+    <h1>Adicionar Item</h1>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      debounce="100"
+      placeholder="Buscar Item"
+      [(ngModel)]="filterTerm"
+      animated
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-item
+      *ngFor="let itemS of orderType?.['items'] | filter:filterTerm"
+      (click)="addItem(itemS?.['id'])"
+    >
+      <span style="width: 20% !important"> {{itemS?.['id-display']}} </span>
+      <ion-label>{{itemS?.['description']}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <ion-toolbar class="ion-text-center">
+    <ion-button shape="round" mode="ios" color="light" (click)="addItem(null)">
+      Cancelar
+      <ion-icon slot="end" name="close-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

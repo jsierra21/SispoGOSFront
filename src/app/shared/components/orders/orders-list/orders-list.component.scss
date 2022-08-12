@@ -1,0 +1,35 @@
+/* Custom Skeleton Line Height and Margin */
+.custom-skeleton ion-skeleton-text {
+    line-height: 13px;
+}
+
+.custom-skeleton ion-skeleton-text:last-child {
+    margin-bottom: 5px;
+}
+
+ion-item {
+    -webkit-box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 16%);
+    box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 15%);
+    margin: 8px 10px;
+    border-radius: 8px;
+    border: 0px;
+    --ion-background-color: white;
+    border-left: 8px solid var(--color-item);
+    ion-label {
+        font-size: 0.8rem !important;
+        color: #002054;
+    }
+
+    ion-icon{
+        font-size: 2.5rem;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    h4{
+        font-size: 0.9rem;   
+    }
+}

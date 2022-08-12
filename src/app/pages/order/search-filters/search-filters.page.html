@@ -1,0 +1,64 @@
+<ion-header mode="ios" class="ion-no-border" lines="none">
+  <ion-toolbar lines="none">
+    <ion-title size="large" class="ion-text-center"><h1>Ordenar y Filtrar</h1></ion-title>
+    <ion-buttons slot="end" (click)="closeModal()">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="box-shadow" [formGroup]="filtersForm">
+    <ion-list lines="none" class="ion-no-margin">
+      <ion-list-header lines="none">
+        <ion-label>
+          <h3>Filtros de Búsqueda</h3>
+        </ion-label>
+      </ion-list-header>
+      <ion-item lines="none">
+        <ion-label position="floating" color="primary">Fecha Inicial</ion-label>
+        <ion-datetime displayFormat="DD/MM/YYYY" placeholder="Selecciona una Fecha" formControlName="start-date"></ion-datetime>
+      </ion-item>
+      <ion-item lines="none"> 
+        <ion-label position="floating" color="primary">Fecha Final</ion-label>
+        <ion-datetime displayFormat="DD/MM/YYYY" placeholder="Selecciona una Fecha" formControlName="end-date"></ion-datetime>
+      </ion-item>
+    </ion-list> 
+
+    <!--
+    <ion-list lines="none" class="ion-no-margin">
+      <ion-list-header lines="none">
+        <ion-label>
+          <h3>Filtros</h3>
+        </ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-label>Ordenar</ion-label>
+        <ion-select multiple="true" cancelText="Nah" okText="Okay!">
+          <ion-select-option value="bacon">Bacon</ion-select-option>
+          <ion-select-option value="olives">Black Olives</ion-select-option>
+          <ion-select-option value="xcheese">Extra Cheese</ion-select-option>
+          <ion-select-option value="peppers">Green Peppers</ion-select-option>
+          <ion-select-option value="mushrooms">Mushrooms</ion-select-option>
+          <ion-select-option value="onions">Onions</ion-select-option>
+          <ion-select-option value="pepperoni">Pepperoni</ion-select-option>
+          <ion-select-option value="pineapple">Pineapple</ion-select-option>
+          <ion-select-option value="sausage">Sausage</ion-select-option>
+          <ion-select-option value="Spinach">Spinach</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list> 
+    -->
+  </form>
+</ion-content>
+<ion-footer class="ion-no-border" mode="ios">
+  <ion-toolbar>
+    <ion-button color="primary" slot="start" shape="round" fill="outline" (click)="clearForm()">
+      Limpiar Filtros
+    </ion-button>
+    <ion-button color="primary" slot="end" shape="round" [disabled]="!filtersForm.valid" (click)="filter()">
+      <ion-icon slot="start" name="filter-sharp"></ion-icon>
+      Filtrar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

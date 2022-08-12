@@ -1,0 +1,21 @@
+.login-container {
+    height: 100%;
+
+    .login-form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    h1 {
+        font-weight: 800;
+        color: #002054;
+    }
+
+    p {
+        color: #707576;
+        font-weight: 500;
+    }
+
+}

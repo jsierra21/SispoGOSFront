@@ -1,0 +1,32 @@
+ion-content {
+    --ion-background-color: #f9f9f9;
+}
+
+h2 {
+    font-family: "Raleway", sans-serif !important;
+    color: #002054;
+    font-size: 24px;
+}
+
+.options {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+ion-slide {
+    margin-right: -6px !important;
+    width: 40.3% !important;
+}
+
+ion-segment-button ion-label {
+    font-size: 0.7rem !important;
+}
+
+.active {
+    // style to detect the active slide
+    color: #002054;
+    font-weight: 600;
+ }

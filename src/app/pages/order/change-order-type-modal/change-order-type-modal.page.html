@@ -1,0 +1,35 @@
+<ion-header mode="ios" class="ion-no-border">
+  <ion-toolbar>
+    <h1>Cambiar Tipo de Orden</h1>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="orderTypeForm" (ngSubmit)="updateOrderType()">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item lines="none">
+            <ion-label position="stacked" color="primary">Tipo de Orden</ion-label>
+            <ion-select placeholder="Tipo de Orden" okText="Seleccionar" cancelText="Cancelar" formControlName="orderTypeI">
+              <ion-select-option *ngFor="let ordert of orderTypes" [value]="ordert.id">
+                {{ordert?.['description']}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <div *ngIf="(orderTypeI.dirty || orderTypeI.touched) && orderTypeI.errors" class="errors">
+            <span *ngIf="orderTypeI.errors?.required">El tipo de orden es requerido</span>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-text-center">
+        <ion-col>
+          <ion-button shape="round" mode="ios" type="submit" [disabled]="!orderTypeForm.valid">
+            Cambiar
+            <ion-icon slot="end" name="save-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  </form>
+</ion-content>

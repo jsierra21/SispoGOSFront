@@ -1,0 +1,227 @@
+<ion-header mode="ios" class="ion-no-border">
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="2">
+          <ion-back-button text="" class="align-v"></ion-back-button>
+        </ion-col>
+        <ion-col size="6">
+          <h1>{{orderType?.['description']}}</h1>
+        </ion-col>
+        <ion-col size="2">
+          <div class="align-v">
+            <ion-button
+              color="danger"
+              size="small"
+              *ngIf="!order?.['order-status']?.['locked']"
+              (click)="lockOrder(true)"
+              fill="outline"
+            >
+              <ion-icon slot="icon-only" name="lock-closed-outline"></ion-icon>
+            </ion-button>
+            <ion-button
+              color="warning"
+              size="small"
+              *ngIf="order?.['order-status']?.['locked']"
+              (click)="lockOrder(false)"
+              fill="outline"
+            >
+              <ion-icon slot="icon-only" name="lock-open-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-col>
+        <!---->
+        <ion-col size="2">
+          <div class="align-v">
+            <ion-button
+              color="light"
+              size="small"
+              *ngIf="orderTypes?.length > 0"
+              (click)="openChangeOrderType()"
+            >
+              <ion-icon slot="icon-only" name="sync-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <app-order-detail [order]="order"></app-order-detail>
+  <form [formGroup]="orderForm" (ngSubmit)="closeOrder($event)">
+    <div class="causal">
+      <ion-item lines="none">
+        <ion-label position="stacked" color="primary">
+          Causal de Legalización
+        </ion-label>
+        <ion-select
+          placeholder="Causal de Legalización"
+          okText="Seleccionar"
+          cancelText="Cancelar"
+          formControlName="causal"
+          mode="ios"
+        >
+          <ion-select-option
+            *ngFor="let causal of orderType?.['causal']"
+            [value]="causal.id"
+          >
+            {{causal?.['description']}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <div
+        *ngIf="(causal.dirty || causal.touched) && causal.errors"
+        class="errors"
+      >
+        <span *ngIf="causal.errors?.required">El item es requerido</span>
+      </div>
+    </div>
+
+    <div class="items ion-text-center">
+      <h3>Ítems Utilizados</h3>
+      <ion-button
+        shape="round"
+        mode="ios"
+        (click)="openAddItem()"
+        fill="outline"
+      >
+        Adicionar
+        <ion-icon slot="end" name="add-outline"></ion-icon>
+      </ion-button>
+      <ion-list>
+        <ion-item-sliding *ngFor="let item of items">
+          <ion-item lines="none">
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="6">
+                  <p>{{item?.['description']}}</p>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-input
+                    type="number"
+                    placeholder="Cantidad"
+                    [value]="item?.['quantity']"
+                    (change)="onChangeEvent($event, item)"
+                    min="1"
+                  ></ion-input>
+                </ion-col>
+                <!-- <ion-col size="2">
+                  <ion-button
+                    color="primary"
+                    fill="clear"
+                    (click)="decreaseItems(item)"
+                  >
+                    <ion-icon name="remove-circle" slot="icon-only"></ion-icon>
+                  </ion-button>
+                </ion-col>
+
+                <ion-col size="2">
+                  <p class="quantity">{{item?.['quantity']}}</p>
+                </ion-col>
+
+                <ion-col size="2">
+                  <ion-button
+                    color="primary"
+                    fill="clear"
+                    (click)="increaseItems(item)"
+                  >
+                    <ion-icon name="add-circle" slot="icon-only"></ion-icon>
+                  </ion-button>
+                </ion-col> -->
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option
+              color="danger"
+              expandable
+              (click)="removeItems(item)"
+            >
+              <ion-icon slot="end" name="trash-outline"></ion-icon>
+              Remover
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+
+    <div class="ion-text-center" *ngIf="additionalInputs?.length > 0">
+      <h3>Información Adicional</h3>
+      <form [formGroup]="additionalInformation" class="additional-information">
+        <app-dynamic-form-element
+          *ngFor="let additionalInput of additionalInputs"
+          [input]="additionalInput"
+          [form]="additionalInformation"
+        ></app-dynamic-form-element>
+      </form>
+    </div>
+
+    <div class="ion-text-center">
+      <ion-button
+        shape="round"
+        mode="ios"
+        color="primary"
+        fill="outline"
+        (click)="captureImg()"
+      >
+        Capturar
+        <ion-icon slot="end" name="camera-outline"></ion-icon>
+      </ion-button>
+      <div *ngIf="clickedImage">
+        <img [src]="clickedImage" />
+      </div>
+    </div>
+
+    <div>
+      <ion-item lines="none">
+        <ion-label position="stacked" color="primary">Observación</ion-label>
+        <ion-textarea
+          placeholder="Por favor adicione una observación..."
+          formControlName="observation"
+        ></ion-textarea>
+      </ion-item>
+      <div
+        *ngIf="(observation.dirty || observation.touched) && observation.errors"
+        class="errors"
+      >
+        <span *ngIf="observation.errors?.required"
+          >La observacion es requerida</span
+        >
+        <span *ngIf="observation.errors?.minlength"
+          >La observacion debe tener al menos 6 caracteres</span
+        >
+      </div>
+    </div>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-button
+            shape="round"
+            mode="ios"
+            color="primary"
+            (click)="closeOrder('Save')"
+            [disabled]="!orderForm.valid"
+          >
+            Guardar
+            <ion-icon slot="end" name="save-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button
+            shape="round"
+            mode="ios"
+            color="success"
+            (click)="closeOrder('Legalize')"
+            [disabled]="!orderForm.valid || !additionalInformation.valid || order?.['order-status']?.['locked']"
+          >
+            Legalizar
+            <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

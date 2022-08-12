@@ -1,0 +1,32 @@
+<ion-content [fullscreen]="true">
+  <div class="top-container ion-padding-start">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="3">
+          <img src="./assets/img/avatar.png">
+        </ion-col>
+        <ion-col size="9">
+          <h2><b>{{authUser['first-name']}}</b></h2>
+          <p>{{ authUser?.['technician']?.email }}</p>
+          <ion-button shape="round" mode="ios" color="danger" fill="outline" size="small" (click)="logout()">
+            Cerrar Sesión
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <!--<div class="menu ion-padding-start">
+    <h6>Opciones</h6>
+    <ion-list>
+      <ion-item lines="none">
+        <ion-icon name="person-outline"></ion-icon>
+        <ion-label>Usuario</ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-icon name="help-circle-outline"></ion-icon>
+        <ion-label>Ayuda</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>-->
+</ion-content>

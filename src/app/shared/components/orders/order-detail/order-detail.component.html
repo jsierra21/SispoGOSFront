@@ -1,0 +1,156 @@
+<div class="order-detail">
+  <div class="box">
+    <ion-grid>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="6">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>No. Orden</h3>
+            </ion-text>
+            <p>{{order?.['id']}}</p>
+          </ion-label>
+        </ion-col>
+        <ion-col size="6">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Predio</h3>
+            </ion-text>
+            <p>{{order?.['suscriptor']?.['id']}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Fecha Asignación</h3>
+            </ion-text>
+            <p>{{order?.['date-assignment']}}</p>
+          </ion-label>
+        </ion-col>
+        <ion-col *ngIf="orderStatus[order?.['order-status']['id']]?.['description'] !== 'Asignada'">
+          <ion-label class="ion-text-wrap">
+            <ion-text color="primary">
+              <h3>Fecha Ejecución</h3>
+            </ion-text>
+            <p>{{order?.['date-execution']}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <div class="box">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Nombres</h3>
+            </ion-text>
+            <p>{{order?.['suscriptor']?.['first-name']}} {{order?.['suscriptor']?.['last-name']}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Dirección</h3>
+            </ion-text>
+            <p>{{order?.['suscriptor']?.['address']}}</p>
+          </ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Estrato</h3>
+            </ion-text>
+            <p>{{order?.['suscriptor']?.['social-stratum']}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="8">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Barrio</h3>
+            </ion-text>
+            <p>{{order?.['suscriptor']?.['neighborhood']}}</p>
+          </ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Teléfono</h3>
+            </ion-text>
+            <p>{{order?.['suscriptor']?.['phone-number']}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <h3 class="sub-title ion-text-center">Datos del Medidor</h3>
+  <div class="box" *ngFor="let meter of order?.['meter']">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Serie</h3>
+            </ion-text>
+            <p>{{meter?.['serie']}}</p>
+          </ion-label>
+        </ion-col>
+        <ion-col size="4">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Marca</h3>
+            </ion-text>
+            <p>{{meter?.['brand']?.['description']}}</p>
+          </ion-label>
+        </ion-col>
+        <ion-col size="4">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>F. Instalación</h3>
+            </ion-text>
+            <p>{{meter?.['instalation-date']}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Ult. Lectura</h3>
+            </ion-text>
+            <p>{{meter?.['last-meter-reading']}}</p>
+          </ion-label>
+        </ion-col>
+        <ion-col size="6">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>Consumo Actual</h3>
+            </ion-text>
+            <p>{{meter?.['current-meter-consumption']}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <h3 class="sub-title ion-text-center">Ultimos Consumos</h3>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="2" *ngFor="let consumption of meter?.['last-meter-consumptions']">
+          <ion-label>
+            <ion-text color="primary">
+              <h3>{{consumption?.id}}</h3>
+            </ion-text>
+            <p>{{consumption?.value}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  
+</div>

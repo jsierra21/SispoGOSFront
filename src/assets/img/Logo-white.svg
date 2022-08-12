@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120.115" height="55.311" viewBox="0 0 120.115 55.311">
+  <g id="Logo" transform="translate(-158 -388)">
+    <text id="Gos" transform="translate(158 431)" fill="#fff" font-size="44" font-family="CoolveticaRg-Regular, Coolvetica"><tspan x="0" y="0">Gos</tspan></text>
+    <g id="Grupo_3" data-name="Grupo 3" transform="translate(239.759 395.27)">
+      <g id="Elipse_1" data-name="Elipse 1" transform="translate(0 4.842)" fill="none" stroke="#949494" stroke-width="4">
+        <circle cx="19.178" cy="19.178" r="19.178" stroke="none"/>
+        <circle cx="19.178" cy="19.178" r="17.178" fill="none"/>
+      </g>
+      <path id="Trazado_6" data-name="Trazado 6" d="M731.656,218.184h12.759a1.423,1.423,0,0,1,.741.568,1.558,1.558,0,0,1,0,.962l-18.484,26.2s-.41.489-.789.489-.726-.489-.726-.489l1.624-19.7H713.721a1.893,1.893,0,0,1-.485-.673,1.389,1.389,0,0,1,0-.753l18.42-26.264a1.363,1.363,0,0,1,.93-.114,1.55,1.55,0,0,1,.643.738Z" transform="translate(-710.032 -198.358)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

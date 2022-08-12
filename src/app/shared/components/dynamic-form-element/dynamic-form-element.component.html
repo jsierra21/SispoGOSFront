@@ -1,0 +1,17 @@
+<div [formGroup]="form">
+  <ion-item lines="none">
+    <ion-label position="stacked" color="primary">{{input.label}}</ion-label>
+    <div [ngSwitch]="input.controlType">
+
+      <ion-input *ngSwitchCase="'textbox'" [formControlName]="input.key" [placeholder]="input.label" [id]="input.key" [type]="input.type" class="full-w"></ion-input>
+
+      <ion-select [id]="input.key" *ngSwitchCase="'dropdown'" [placeholder]="input.label" okText="Seleccionar" cancelText="Cancelar" [formControlName]="input.key" class="full-w" mode="ios">
+        <ion-select-option *ngFor="let opt of input.options" [value]="opt.key">
+          {{opt.value}}
+        </ion-select-option>
+      </ion-select>
+
+    </div>
+  </ion-item>
+  <div class="errors" *ngIf="(this.form.controls[this.input.key].dirty || this.form.controls[this.input.key].touched) &&!isValid">{{input.label}} es requerido</div>
+</div>
