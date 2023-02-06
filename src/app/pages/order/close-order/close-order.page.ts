@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/dot-notation */
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Geolocation, Geoposition } from '@awesome-cordova-plugins/geolocation/ngx';
 import { AlertController, ModalController } from '@ionic/angular';
-
 import { AdditionalDataBase } from 'src/app/shared/interfaces/additional-data-base';
 import { Order, OrderType } from 'src/app/shared/interfaces/order.interface';
 import { DynamicFormControlService } from 'src/app/shared/services/dynamic-form.service';
@@ -44,7 +43,8 @@ export class CloseOrderPage implements OnInit {
     private dfs: DynamicFormControlService,
     private alertController: AlertController,
     private photoService: PhotoService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private geolocation: Geolocation
   ) {
     this.id = this.actRoute.snapshot.paramMap.get('id');
   }
@@ -62,8 +62,8 @@ export class CloseOrderPage implements OnInit {
 
         this.clickedImage = this.order?.pictures[0]?.['file_b64']
           ? this.sanitizer.bypassSecurityTrustUrl(
-              this.order?.pictures[0]?.['file_b64']
-            )
+            this.order?.pictures[0]?.['file_b64']
+          )
           : '';
         this.items = order?.items;
         await this.getOrderType(order?.['order-type']['id']);
@@ -226,49 +226,58 @@ export class CloseOrderPage implements OnInit {
         },
         {
           text: 'Sí',
-          handler: () => {
-            const orderUpdate: Order = {
-              ...this.order,
-              'order-type': this.orderType,
-              causal: this.orderType?.['causal'].find(
-                (element) => element.id === this.causal.value
-              ),
-              observation: this.observation.value,
-              items: this.items,
-              'additional-data': this.additionalInformation.value,
-            };
+          handler: async () => {
 
-            const statusNext = this.ordersService.getNewStatus(
-              this.order['order-status']['id']
-            );
+            this.geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((data: Geoposition) => {
 
-            this.ordersService.putOrder(orderUpdate, event).subscribe(
-              async (data) => {
-                const orderU = data.orders[0];
-                if (!orderU?.['successful']) {
-                  const alert = await this.alertController.create({
-                    header: '¡Atención!',
-                    message: `Problemas al actualizar la orden, ${orderU?.['message']}`,
-                    buttons: ['OK'],
-                  });
+              const orderUpdate: Order = {
+                ...this.order,
+                'order-type': this.orderType,
+                causal: this.orderType?.['causal'].find(
+                  (element) => element.id === this.causal.value
+                ),
+                observation: this.observation.value,
+                items: this.items,
+                'additional-data': this.additionalInformation.value,
+                latitud: data.coords.latitude,
+                longitud: data.coords.longitude
+              };
 
-                  await alert.present();
-                } else {
-                  if (event === 'Legalize') {
-                    this.router.navigate(
-                      [`/options/orders/${statusNext.url}${orderUpdate['id']}`],
-                      { replaceUrl: true }
-                    );
+              const statusNext = this.ordersService.getNewStatus(
+                this.order['order-status']['id']
+              );
+
+              this.ordersService.putOrder(orderUpdate, event).subscribe(
+                async (data) => {
+                  const orderU = data.orders[0];
+                  if (!orderU?.['successful']) {
+                    const alert = await this.alertController.create({
+                      header: '¡Atención!',
+                      message: `Problemas al actualizar la orden, ${orderU?.['message']}`,
+                      buttons: ['OK'],
+                    });
+
+                    await alert.present();
+                  } else {
+                    if (event === 'Legalize') {
+                      this.router.navigate(
+                        [`/options/orders/${statusNext.url}${orderUpdate['id']}`],
+                        { replaceUrl: true }
+                      );
+                    }
                   }
+                },
+                (error) => {
+                  console.log(error);
+                },
+                () => {
+                  this._isSubmitted = true;
                 }
-              },
-              (error) => {
-                console.log(error);
-              },
-              () => {
-                this._isSubmitted = true;
-              }
-            );
+              );
+
+            }).catch(e => {
+              window.alert('Acción requerida, Por favor encienda la ubicación e intente nuevamente');
+            });
           },
         },
       ],

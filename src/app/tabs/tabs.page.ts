@@ -1,18 +1,13 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-
-import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
-import { Platform } from '@ionic/angular';
-import { Subscription } from 'rxjs';
-
-import { WebSocketService } from '../core/services/web-socket.service';
+import { Component, NgZone } from '@angular/core';
+import { Geolocation, Geoposition } from '@awesome-cordova-plugins/geolocation/ngx';
+import { GeolocationService } from '../shared/services/geolocation.service';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
 })
-export class TabsPage implements OnInit {
-  socket;
+export class TabsPage {
 
   tabs = [
     { name: 'Inicio', tab: 'home', icon: 'home-outline' },
@@ -25,52 +20,41 @@ export class TabsPage implements OnInit {
     { name: 'Menú', tab: 'menu', icon: 'person-circle-outline' },
   ];
 
-  subscription: Subscription;
-
   constructor(
-    private platform: Platform,
-    protected webSocketService: WebSocketService,
+    private geolocationService: GeolocationService,
     private geolocation: Geolocation,
     private ngZone: NgZone
-  ) {}
+  ) { }
 
-  ngOnInit() {
-    //   this.platform.ready().then(() => {
-    //     this.subscription = this.geolocation
-    //       .watchPosition()
-    //       .subscribe(async (response: any) => {
-    //         const coords = {
-    //           lat: response.coords.latitude,
-    //           lng: response.coords.longitude,
-    //         };
-    //         //Update LOCATION
-    //         console.log(coords);
-    //         this.webSocketService.emitEvent('updateLocation', coords);
-    //       });
-    //   });
-  }
 
   ionViewDidEnter() {
-    console.log('UserHunts run');
+
     const positionOptions: PositionOptions = {
       enableHighAccuracy: true,
       timeout: 5000,
-      maximumAge: Infinity,
+      maximumAge: Infinity
     };
 
-    this.subscription = this.geolocation
-      .watchPosition(positionOptions)
-      .subscribe(async (response: any) => {
+    this.geolocation.watchPosition(positionOptions)
+      .subscribe(async (geoposition: Geoposition) => {
+
         const coords = {
-          lat: response.coords.latitude,
-          lng: response.coords.longitude,
+          lat: geoposition.coords.latitude,
+          lng: geoposition.coords.longitude,
         };
-        //Update LOCATION
-        console.log(coords);
+
         this.ngZone.run(() => {
-          // update the data of the component
-          this.webSocketService.emitEvent('updateLocation', coords);
+          this.geolocationService.save(coords).subscribe((data) => {
+            console.log(data);
+          }, (error) => {
+            console.log(error);
+          });
         });
+
+      }, () => {
+        window.alert('Acción requerida, Por favor encienda la ubicación e intente nuevamente');
       });
+
   }
+
 }

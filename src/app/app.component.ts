@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { StorageService } from './core/services/storage.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +6,7 @@ import { StorageService } from './core/services/storage.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent{
+
   constructor(
   ) {}
 

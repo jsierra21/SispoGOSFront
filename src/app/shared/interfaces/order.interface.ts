@@ -12,6 +12,8 @@ export interface Order {
 	items?: any;
 	'additional-data'?: any;
 	'pictures'?:any;
+  latitud: number;
+  longitud: number;
 }
 
 export interface OrderType {

@@ -2,24 +2,20 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { IonicStorageModule } from '@ionic/storage-angular';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
+import { DatePipe } from '@angular/common';
+import { Camera } from '@ionic-native/camera/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { DynamicFormControlService } from './shared/services/dynamic-form.service';
-import { DatePipe } from '@angular/common';
-import { Camera } from '@ionic-native/camera/ngx';
 
 import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { SERVER_SOCKET } from 'src/environments/environment';
-
-const config: SocketIoConfig = { url: SERVER_SOCKET, options: {} };
 
 
 @NgModule({
@@ -30,8 +26,7 @@ const config: SocketIoConfig = { url: SERVER_SOCKET, options: {} };
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
-    IonicStorageModule.forRoot(),
-    SocketIoModule.forRoot(config)
+    IonicStorageModule.forRoot()
   ],
   providers: [
     Geolocation,
@@ -45,4 +40,4 @@ const config: SocketIoConfig = { url: SERVER_SOCKET, options: {} };
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
