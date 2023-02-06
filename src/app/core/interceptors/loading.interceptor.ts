@@ -35,25 +35,10 @@ export class LoadingInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((err) => {
         if (err instanceof HttpErrorResponse) {
-          switch ((err as HttpErrorResponse).status) {
-            case 400:
-              console.log(`Error 400`);
-              return throwError(err);
-            case 401:
-              console.log(`401`);
-              return throwError(err);
-            case 403:
-              console.log(`Error 401 o 403`);
-              return throwError(err);
-            default:
-              return throwError(err);
-          }
-        } else {
           return throwError(err);
         }
       }),
       catchError((err) => {
-        console.log(err);
         this.presentFailedAlert(err.error.body || err.error.message || err.statusText);
         return EMPTY;
       }),
