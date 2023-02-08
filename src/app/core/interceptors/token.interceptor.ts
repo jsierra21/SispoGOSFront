@@ -37,15 +37,14 @@ export class TokenInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-
         if (error.status === 401) {
-          this.auth.logout().then(() => {
-            this.router.navigateByUrl('login', { replaceUrl: true });
-          });
+          if (!error.error.status !== false) {
+            this.auth.logout().then(() => {
+              this.router.navigateByUrl('login', { replaceUrl: true });
+            });
+          }
         }
-
         return throwError(error);
-
       })).toPromise();
   }
 
