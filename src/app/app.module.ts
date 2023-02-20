@@ -10,11 +10,13 @@ import { AppComponent } from './app.component';
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
 import { DatePipe } from '@angular/common';
+import { Diagnostic } from '@awesome-cordova-plugins/diagnostic/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { DynamicFormControlService } from './shared/services/dynamic-form.service';
 
+import { BackgroundGeolocation } from '@awesome-cordova-plugins/background-geolocation/ngx';
 import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
 
 
@@ -29,6 +31,7 @@ import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
     IonicStorageModule.forRoot()
   ],
   providers: [
+    BackgroundGeolocation,
     Geolocation,
     Camera,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -36,7 +39,8 @@ import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     Network,
     DynamicFormControlService,
-    DatePipe
+    DatePipe,
+    Diagnostic
   ],
   bootstrap: [AppComponent],
 })

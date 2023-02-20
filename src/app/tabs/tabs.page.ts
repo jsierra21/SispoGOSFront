@@ -1,5 +1,8 @@
 import { Component, NgZone } from '@angular/core';
+
 import { Geolocation, Geoposition } from '@awesome-cordova-plugins/geolocation/ngx';
+import { User } from '../core/interfaces/auth.interface';
+import { AuthenticationService } from '../core/services/authentication.service';
 import { GeolocationService } from '../shared/services/geolocation.service';
 
 @Component({
@@ -21,11 +24,12 @@ export class TabsPage {
   ];
 
   constructor(
+    private authService: AuthenticationService,
     private geolocationService: GeolocationService,
     private geolocation: Geolocation,
     private ngZone: NgZone
-  ) { }
-
+  ) {
+  }
 
   ionViewDidEnter() {
 
@@ -38,18 +42,25 @@ export class TabsPage {
     this.geolocation.watchPosition(positionOptions)
       .subscribe(async (geoposition: Geoposition) => {
 
-        const coords = {
-          lat: geoposition.coords.latitude,
-          lng: geoposition.coords.longitude,
-        };
+        this.authService.userData$.subscribe((userData: User) => {
 
-        this.ngZone.run(() => {
-          this.geolocationService.save(coords).subscribe((data) => {
-            console.log(data);
-          }, (error) => {
-            console.log(error);
+          const coords = {
+            lat: geoposition.coords.latitude,
+            lng: geoposition.coords.longitude,
+            user: userData.user,
+            origin: 'PP'
+          };
+
+          this.ngZone.run(() => {
+            this.geolocationService.save(coords).subscribe((data) => {
+              console.log(data);
+            }, (error) => {
+              console.log(error);
+            });
           });
+
         });
+
 
       }, () => {
         window.alert('Acción requerida, Por favor encienda la ubicación e intente nuevamente');

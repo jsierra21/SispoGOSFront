@@ -14,7 +14,7 @@ export class GeolocationService {
   }
 
   public save(data: any): Observable<ResponseAPI> {
-    return this.http.post<ResponseAPI>(`${API_URL}/gos/geolocation`, data, { params: { ignore: true } });
+    return this.http.post<ResponseAPI>(`${API_URL}/tracking/geolocation`, data, { params: { ignore: true } });
   }
 
 }
