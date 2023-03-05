@@ -29,42 +29,89 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;600;800;900&family=Roboto:wght@100;300;400;500;900&display=swap");
 
 .errors {
-    font-size: small;
-    color: #fff;
-    background: var(--ion-color-danger);
-    padding-left: 15px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+  font-size: small;
+  color: #fff;
+  background: var(--ion-color-danger);
+  padding-left: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
-.modal-items{
-    --height: 100%;
-    --min-height: 45%;
-    --max-height: 70%;
-    --width: 94%;
-    --border-radius: 10px;
+.modal-items {
+  --height: 100%;
+  --min-height: 45%;
+  --max-height: 70%;
+  --width: 94%;
+  --border-radius: 10px;
 }
 
 .modal-min {
-    --height: 40%;
-    --border-radius: 10px;
-    padding: 25px;
+  --height: 40%;
+  --border-radius: 10px;
+  padding: 25px;
 }
 
-.modal-filters{
-    --height: 95%;
-    --width: 95%;
-    --border-radius: 10px;
+.modal-filters {
+  --height: 95%;
+  --width: 95%;
+  --border-radius: 10px;
 }
 
 .main {
-    -webkit-box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 16%);
-    box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 15%);
-    margin: 5px 0px;
-    border-radius: 7px;
-    border: 0px;
+  -webkit-box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 16%);
+  box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 15%);
+  margin: 5px 0px;
+  border-radius: 7px;
+  border: 0px;
 }
 
-ion-header{
-    -webkit-box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 16%);
-    box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 15%);
+ion-header {
+  -webkit-box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 16%);
+  box-shadow: 0px 0px 15px -4px rgb(0 0 0 / 15%);
+}
+
+.blinking {
+  animation-name: flicker;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  -webkit-animation-name: flicker;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+}
+
+@-moz-keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

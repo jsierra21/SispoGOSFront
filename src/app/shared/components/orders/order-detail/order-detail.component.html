@@ -45,6 +45,7 @@
         <ion-col>
           <ion-label>
             <ion-text color="primary">
+              <h3 class="frozen blinking" *ngIf="order?.suscriptor?.congelado === 'S'">Congelado</h3>
               <h3>Nombres</h3>
             </ion-text>
             <p>{{order?.['suscriptor']?.['first-name']}} {{order?.['suscriptor']?.['last-name']}}</p>
@@ -152,5 +153,4 @@
       </ion-row>
     </ion-grid>
   </div>
-  
 </div>
