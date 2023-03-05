@@ -52,18 +52,13 @@ export class TabsPage {
           };
 
           this.ngZone.run(() => {
-            this.geolocationService.save(coords).subscribe((data) => {
-              console.log(data);
-            }, (error) => {
+            this.geolocationService.save(coords).subscribe(() => { }, (error) => {
               console.log(error);
             });
           });
 
         });
 
-
-      }, () => {
-        window.alert('Acción requerida, Por favor encienda la ubicación e intente nuevamente');
       });
 
   }

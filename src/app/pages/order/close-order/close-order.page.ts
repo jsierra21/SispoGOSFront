@@ -289,6 +289,7 @@ export class CloseOrderPage implements OnInit {
 
               } else {
                 window.alert('Acción requerida, Por favor active la ubicación e intente nuevamente');
+                this.diagnostic.switchToLocationSettings();
               }
 
             });

@@ -58,9 +58,7 @@ export class AppComponent {
                     origin: 'SP'
                   };
 
-                  this.geolocationService.save(coords).subscribe((data) => {
-                    console.log(data);
-                  }, (error) => {
+                  this.geolocationService.save(coords).subscribe(() => { }, (error) => {
                     console.log(error);
                   });
 
