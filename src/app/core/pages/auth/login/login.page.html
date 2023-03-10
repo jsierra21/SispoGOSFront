@@ -15,9 +15,6 @@
             <ion-label position="floating">Usuario</ion-label>
             <ion-input type="text" placeholder="Usuario" formControlName="user"></ion-input>
           </ion-item>
-          <div *ngIf="(email.dirty || email.touched) && email.errors" class="errors">
-            <span *ngIf="email.errors?.required">El campo usuario es requerido</span>
-          </div>
         </ion-col>
 
         <ion-col size="12">
@@ -25,14 +22,10 @@
             <ion-label position="floating">Contraseña</ion-label>
             <ion-input type="password" placeholder="Contraseña" formControlName="password"></ion-input>
           </ion-item>
-          <div *ngIf="(password.dirty || password.touched) && password.errors" class="errors">
-            <span *ngIf="password.errors?.required">La contraseña es requerida</span>
-            <span *ngIf="password.errors?.minlength">La contraseña debe tener al menos 6 caracteres</span>
-          </div>
         </ion-col>
 
         <ion-col>
-          <ion-button type="submit" shape="round" mode="ios" expand="block" [disabled]="!this.credentials.valid">
+          <ion-button type="submit" shape="round" mode="ios" expand="block">
             Iniciar Sesión Test
           </ion-button>
         </ion-col>

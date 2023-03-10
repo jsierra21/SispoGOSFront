@@ -1,6 +1,7 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnDestroy } from '@angular/core';
 
 import { Geolocation, Geoposition } from '@awesome-cordova-plugins/geolocation/ngx';
+import { Subscription } from 'rxjs';
 import { User } from '../core/interfaces/auth.interface';
 import { AuthenticationService } from '../core/services/authentication.service';
 import { GeolocationService } from '../shared/services/geolocation.service';
@@ -10,7 +11,7 @@ import { GeolocationService } from '../shared/services/geolocation.service';
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
 })
-export class TabsPage {
+export class TabsPage implements OnDestroy {
 
   tabs = [
     { name: 'Inicio', tab: 'home', icon: 'home-outline' },
@@ -22,6 +23,8 @@ export class TabsPage {
     },
     { name: 'Menú', tab: 'menu', icon: 'person-circle-outline' },
   ];
+
+  private subscription: Subscription;
 
   constructor(
     private authService: AuthenticationService,
@@ -39,7 +42,7 @@ export class TabsPage {
       maximumAge: Infinity
     };
 
-    this.geolocation.watchPosition(positionOptions)
+    this.subscription = this.geolocation.watchPosition(positionOptions)
       .subscribe(async (geoposition: Geoposition) => {
 
         this.authService.userData$.subscribe((userData: User) => {
@@ -58,9 +61,11 @@ export class TabsPage {
           });
 
         });
-
       });
+  }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

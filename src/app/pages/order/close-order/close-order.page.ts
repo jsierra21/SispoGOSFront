@@ -4,7 +4,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Diagnostic } from '@awesome-cordova-plugins/diagnostic/ngx';
 import { Geolocation, Geoposition } from '@awesome-cordova-plugins/geolocation/ngx';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { AdditionalDataBase } from 'src/app/shared/interfaces/additional-data-base';
 import { Order, OrderType } from 'src/app/shared/interfaces/order.interface';
 import { DynamicFormControlService } from 'src/app/shared/services/dynamic-form.service';
@@ -46,7 +46,8 @@ export class CloseOrderPage implements OnInit {
     private photoService: PhotoService,
     private sanitizer: DomSanitizer,
     private geolocation: Geolocation,
-    private diagnostic: Diagnostic
+    private diagnostic: Diagnostic,
+    private platform: Platform
   ) {
     this.id = this.actRoute.snapshot.paramMap.get('id');
   }
@@ -230,68 +231,65 @@ export class CloseOrderPage implements OnInit {
           text: 'Sí',
           handler: async () => {
 
-            this.diagnostic.isLocationEnabled().then(hasPermission => {
+            const hasPermission: boolean = this.platform.is('mobileweb') ? true : await this.diagnostic.isLocationEnabled();
 
-              if (hasPermission) {
+            if (!hasPermission) {
+              window.alert('Acción requerida, Por favor active la ubicación e intente nuevamente');
+              this.diagnostic.switchToLocationSettings();
+              return;
+            }
 
-                this.geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((geoposition: Geoposition) => {
+            this.geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((geoposition: Geoposition) => {
 
-                  const orderUpdate: Order = {
-                    ...this.order,
-                    'order-type': this.orderType,
-                    causal: this.orderType?.['causal'].find(
-                      (element) => element.id === this.causal.value
-                    ),
-                    observation: this.observation.value,
-                    items: this.items,
-                    'additional-data': this.additionalInformation.value,
-                    latitud: geoposition.coords.latitude,
-                    longitud: geoposition.coords.longitude
-                  };
+              const orderUpdate: Order = {
+                ...this.order,
+                'order-type': this.orderType,
+                causal: this.orderType?.['causal'].find(
+                  (element) => element.id === this.causal.value
+                ),
+                observation: this.observation.value,
+                items: this.items,
+                'additional-data': this.additionalInformation.value,
+                latitud: geoposition.coords.latitude,
+                longitud: geoposition.coords.longitude
+              };
 
-                  const statusNext = this.ordersService.getNewStatus(
-                    this.order['order-status']['id']
-                  );
+              const statusNext = this.ordersService.getNewStatus(
+                this.order['order-status']['id']
+              );
 
-                  this.ordersService.putOrder(orderUpdate, event).subscribe(async (data) => {
+              this.ordersService.putOrder(orderUpdate, event).subscribe(async (data) => {
 
-                    const orderU = data.orders[0];
+                const orderU = data.orders[0];
 
-                    if (!orderU?.['successful']) {
+                if (!orderU?.['successful']) {
 
-                      const alertC = await this.alertController.create({
-                        header: '¡Atención!',
-                        message: `Problemas al actualizar la orden, ${orderU?.['message']}`,
-                        buttons: ['OK'],
-                      });
+                  const alertC = await this.alertController.create({
+                    header: '¡Atención!',
+                    message: `Problemas al actualizar la orden, ${orderU?.['message']}`,
+                    buttons: ['OK'],
+                  });
 
-                      await alertC.present();
+                  await alertC.present();
 
-                    } else {
+                } else {
 
-                      if (event === 'Legalize') {
-                        this.router.navigate(
-                          [`/options/orders/${statusNext.url}${orderUpdate['id']}`],
-                          { replaceUrl: true }
-                        );
-                      }
+                  if (event === 'Legalize') {
+                    this.router.navigate(
+                      [`/options/orders/${statusNext.url}${orderUpdate['id']}`],
+                      { replaceUrl: true }
+                    );
+                  }
 
-                    }
-                  },
-                    (error) => {
-                      console.log(error);
-                    },
-                    () => {
-                      this._isSubmitted = true;
-                    }
-                  );
-                });
-
-              } else {
-                window.alert('Acción requerida, Por favor active la ubicación e intente nuevamente');
-                this.diagnostic.switchToLocationSettings();
-              }
-
+                }
+              },
+                (error) => {
+                  console.log(error);
+                },
+                () => {
+                  this._isSubmitted = true;
+                }
+              );
             });
 
           },

@@ -115,3 +115,8 @@ ion-header {
     opacity: 1;
   }
 }
+
+ion-item {
+  --highlight-color-valid: transparent;
+  --highlight-color-invalid: transparent;
+}
