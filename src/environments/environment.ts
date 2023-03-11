@@ -6,7 +6,7 @@ export const environment = {
   production: false,
 };
 
-export const API_URL = 'https://cartago.syspotec.co:6060/cartago/servig';
+export const API_URL = 'https://desarrollo.syspotec.co:8081/ords/cartapru/servig';
 
 export const SERVER_SOCKET = 'https://gos.syspotec.co:8098/';
 
