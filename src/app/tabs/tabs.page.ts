@@ -1,7 +1,7 @@
-import { Component, NgZone, OnDestroy } from '@angular/core';
-
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Geolocation, Geoposition } from '@awesome-cordova-plugins/geolocation/ngx';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { User } from '../core/interfaces/auth.interface';
 import { AuthenticationService } from '../core/services/authentication.service';
 import { GeolocationService } from '../shared/services/geolocation.service';
@@ -11,7 +11,7 @@ import { GeolocationService } from '../shared/services/geolocation.service';
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
 })
-export class TabsPage implements OnDestroy {
+export class TabsPage implements OnInit, OnDestroy {
 
   tabs = [
     { name: 'Inicio', tab: 'home', icon: 'home-outline' },
@@ -34,7 +34,7 @@ export class TabsPage implements OnDestroy {
   ) {
   }
 
-  ionViewDidEnter() {
+  startTracking() {
 
     const positionOptions: PositionOptions = {
       enableHighAccuracy: true,
@@ -43,29 +43,42 @@ export class TabsPage implements OnDestroy {
     };
 
     this.subscription = this.geolocation.watchPosition(positionOptions)
+      .pipe(filter((geoposition: Geoposition) => geoposition.coords !== undefined))
       .subscribe(async (geoposition: Geoposition) => {
 
         this.authService.userData$.subscribe((userData: User) => {
 
-          const coords = {
-            lat: geoposition.coords.latitude,
-            lng: geoposition.coords.longitude,
-            user: userData.user,
-            origin: 'PP'
-          };
+          const user: string = userData.user;
 
-          this.ngZone.run(() => {
-            this.geolocationService.save(coords).subscribe(() => { }, (error) => {
-              console.log(error);
+          if (user) {
+            const coords = {
+              lat: geoposition.coords.latitude,
+              lng: geoposition.coords.longitude,
+              user,
+              origin: 'PP'
+            };
+
+            this.ngZone.run(() => {
+              this.geolocationService.save(coords).subscribe(() => { }, (error) => {
+                console.log(error);
+              });
             });
-          });
+          }
 
         });
       });
   }
 
-  ngOnDestroy(): void {
+  stopTracking() {
     this.subscription.unsubscribe();
+  }
+
+  ngOnInit() {
+    this.startTracking();
+  }
+
+  ngOnDestroy(): void {
+    this.startTracking();
   }
 
 }
