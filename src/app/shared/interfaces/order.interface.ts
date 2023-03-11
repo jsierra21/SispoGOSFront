@@ -15,6 +15,7 @@ export interface Order {
   latitud: number;
   longitud: number;
   limite: number;
+  'cantidad-soporte': number;
 }
 
 export interface OrderType {

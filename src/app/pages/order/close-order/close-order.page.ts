@@ -256,11 +256,6 @@ export class CloseOrderPage implements OnInit {
               return;
             }
 
-            if (this.resources.length === 0) {
-              this.showAlert('¡Atención!', 'Los soportes son requeridos', ['OK']);
-              return;
-            }
-
             this.geolocation.getCurrentPosition({ maximumAge: Infinity }).then((geoposition: Geoposition) => {
 
               const orderUpdate: Order = {
@@ -273,7 +268,8 @@ export class CloseOrderPage implements OnInit {
                 items: this.items,
                 'additional-data': this.additionalInformation.value,
                 latitud: geoposition.coords.latitude,
-                longitud: geoposition.coords.longitude
+                longitud: geoposition.coords.longitude,
+                'cantidad-soporte': this.resources.length
               };
 
               const statusNext = this.ordersService.getNewStatus(
