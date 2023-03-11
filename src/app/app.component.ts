@@ -51,17 +51,20 @@ export class AppComponent {
 
                 this.authService.userData$.subscribe((userData: User) => {
 
-                  const coords = {
-                    lat: location.latitude,
-                    lng: location.longitude,
-                    user: userData.user,
-                    origin: 'SP'
-                  };
+                  const user: string = userData.user;
 
-                  this.geolocationService.save(coords).subscribe(() => { }, (error) => {
-                    console.log(error);
-                  });
+                  if (user) {
+                    const coords = {
+                      lat: location.latitude,
+                      lng: location.longitude,
+                      user,
+                      origin: 'SP'
+                    };
 
+                    this.geolocationService.save(coords).subscribe(() => { }, (error) => {
+                      console.log(error);
+                    });
+                  }
                 });
 
                 this.backgroundGeolocation.finish();

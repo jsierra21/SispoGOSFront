@@ -57,7 +57,7 @@ export class LoginPage implements OnInit {
       duration: 3000
     });
 
-    toast.present();
+    await toast.present();
     return toast;
   }
 

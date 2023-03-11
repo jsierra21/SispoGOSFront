@@ -4,9 +4,11 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Diagnostic } from '@awesome-cordova-plugins/diagnostic/ngx';
 import { Geolocation, Geoposition } from '@awesome-cordova-plugins/geolocation/ngx';
-import { AlertController, ModalController, Platform } from '@ionic/angular';
+import { Camera, CameraResultType } from '@capacitor/camera';
+import { AlertButton, AlertController, ModalController, Platform, ToastController } from '@ionic/angular';
 import { AdditionalDataBase } from 'src/app/shared/interfaces/additional-data-base';
 import { Order, OrderType } from 'src/app/shared/interfaces/order.interface';
+import { Resource } from 'src/app/shared/interfaces/resource';
 import { DynamicFormControlService } from 'src/app/shared/services/dynamic-form.service';
 import { OrdersService } from 'src/app/shared/services/orders.service';
 import { PhotoService } from 'src/app/shared/services/photo.service';
@@ -19,21 +21,22 @@ import { ChangeOrderTypeModalPage } from '../change-order-type-modal/change-orde
   styleUrls: ['./close-order.page.scss'],
 })
 export class CloseOrderPage implements OnInit {
+
   id: any;
   order: Order;
   orderForm: FormGroup;
   itemChange = 0;
-
   orderTypes: Array<any>;
   orderType: OrderType;
+
   _isSubmitted = false;
 
   items: Array<any> = [];
   additionalInformation!: FormGroup;
-
   additionalInputs: AdditionalDataBase<string>[] | null = [];
-
   clickedImage: SafeResourceUrl;
+
+  resources: Array<Resource> = [];
 
   constructor(
     private actRoute: ActivatedRoute,
@@ -47,7 +50,8 @@ export class CloseOrderPage implements OnInit {
     private sanitizer: DomSanitizer,
     private geolocation: Geolocation,
     private diagnostic: Diagnostic,
-    private platform: Platform
+    private platform: Platform,
+    public toastController: ToastController
   ) {
     this.id = this.actRoute.snapshot.paramMap.get('id');
   }
@@ -61,13 +65,18 @@ export class CloseOrderPage implements OnInit {
 
     this.ordersService.getOrders(false, this.id).subscribe(
       async (order: Order) => {
-        this.order = order;
 
-        this.clickedImage = this.order?.pictures[0]?.['file_b64']
-          ? this.sanitizer.bypassSecurityTrustUrl(
-            this.order?.pictures[0]?.['file_b64']
-          )
-          : '';
+        this.order = order;
+        const pictures = this.order?.pictures || [];
+
+        pictures.forEach((resource: any) => {
+          this.resources.push({
+            urlBase64: this.sanitizer.bypassSecurityTrustUrl(resource.file_b64),
+            mimetype: resource.mimetype,
+            base64: resource.base64
+          });
+        });
+
         this.items = order?.items;
         await this.getOrderType(order?.['order-type']['id']);
       },
@@ -161,8 +170,6 @@ export class CloseOrderPage implements OnInit {
     } else {
       this.items[position].quantity = 1;
     }
-
-    console.log(this.items);
   }
 
   async lockOrder(status) {
@@ -234,12 +241,27 @@ export class CloseOrderPage implements OnInit {
             const hasPermission: boolean = this.platform.is('mobileweb') ? true : await this.diagnostic.isLocationEnabled();
 
             if (!hasPermission) {
-              window.alert('Acción requerida, Por favor active la ubicación e intente nuevamente');
-              this.diagnostic.switchToLocationSettings();
+              this.showAlert('Acción requerida!', 'Por favor active la ubicación e intente nuevamente', [
+                {
+                  text: 'No',
+                  role: 'cancel',
+                  cssClass: 'secondary',
+                },
+                {
+                  text: 'Sí',
+                  handler: () => {
+                    this.diagnostic.switchToLocationSettings();
+                  }
+                }]);
               return;
             }
 
-            this.geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((geoposition: Geoposition) => {
+            if (this.resources.length === 0) {
+              this.showAlert('¡Atención!', 'Los soportes son requeridos', ['OK']);
+              return;
+            }
+
+            this.geolocation.getCurrentPosition({ maximumAge: Infinity }).then((geoposition: Geoposition) => {
 
               const orderUpdate: Order = {
                 ...this.order,
@@ -274,6 +296,11 @@ export class CloseOrderPage implements OnInit {
 
                 } else {
 
+
+                  this.resources.forEach(async (resource, index) => {
+                    await this.photoService.save(this.id, (index + 1), resource).toPromise();
+                  });
+
                   if (event === 'Legalize') {
                     this.router.navigate(
                       [`/options/orders/${statusNext.url}${orderUpdate['id']}`],
@@ -296,13 +323,26 @@ export class CloseOrderPage implements OnInit {
         },
       ],
     });
+
     await alert.present();
   }
 
-  async captureImg() {
-    this.clickedImage = this.sanitizer.bypassSecurityTrustUrl(
-      await this.photoService.captureImage(this.id)
-    );
+  async capturePhoto() {
+
+    const options = {
+      quality: 30,
+      allowEditing: false,
+      resultType: CameraResultType.Base64
+    };
+
+    const image = await Camera.getPhoto(options);
+    const mimetype = `image/${image.format}`;
+
+    this.resources.push({
+      urlBase64: this.sanitizer.bypassSecurityTrustUrl(`data:${mimetype};base64,${image.base64String}`),
+      mimetype,
+      base64: image.base64String
+    });
   }
 
   decreaseItems(item) {
@@ -328,4 +368,38 @@ export class CloseOrderPage implements OnInit {
   get observation() {
     return this.orderForm.get('observation');
   }
+
+  async removeResource(resource: Resource): Promise<void> {
+
+    const alert = await this.showAlert('Confirmación!', 'Está seguro de eliminar el recurso?', [
+      {
+        text: 'No',
+        role: 'cancel',
+        cssClass: 'secondary',
+      },
+      {
+        text: 'Sí',
+        handler: () => {
+          const index: number = this.resources.indexOf(resource);
+          this.resources.splice(index, 1);
+        }
+      }
+    ]);
+
+    await alert.onDidDismiss();
+  }
+
+  private async showAlert(header: string, message: string, buttons?: (AlertButton | string)[]): Promise<HTMLIonAlertElement> {
+
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons,
+      backdropDismiss: false,
+    });
+
+    await alert.present();
+    return alert;
+  }
+
 }

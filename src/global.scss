@@ -71,11 +71,11 @@ ion-header {
 
 .blinking {
   animation-name: flicker;
-  animation-duration: 2s;
+  animation-duration: 3s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   -webkit-animation-name: flicker;
-  -webkit-animation-duration: 2s;
+  -webkit-animation-duration: 3s;
   -webkit-animation-timing-function: linear;
   -webkit-animation-iteration-count: infinite;
 }
