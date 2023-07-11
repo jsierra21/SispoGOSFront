@@ -1,18 +1,17 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-
-import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
-import { Platform } from '@ionic/angular';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Geolocation, Geoposition } from '@awesome-cordova-plugins/geolocation/ngx';
 import { Subscription } from 'rxjs';
-
-import { WebSocketService } from '../core/services/web-socket.service';
+import { filter } from 'rxjs/operators';
+import { User } from '../core/interfaces/auth.interface';
+import { AuthenticationService } from '../core/services/authentication.service';
+import { GeolocationService } from '../shared/services/geolocation.service';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
 })
-export class TabsPage implements OnInit {
-  socket;
+export class TabsPage implements OnInit, OnDestroy {
 
   tabs = [
     { name: 'Inicio', tab: 'home', icon: 'home-outline' },
@@ -25,52 +24,61 @@ export class TabsPage implements OnInit {
     { name: 'Menú', tab: 'menu', icon: 'person-circle-outline' },
   ];
 
-  subscription: Subscription;
+  private subscription: Subscription;
 
   constructor(
-    private platform: Platform,
-    protected webSocketService: WebSocketService,
+    private authService: AuthenticationService,
+    private geolocationService: GeolocationService,
     private geolocation: Geolocation,
     private ngZone: NgZone
-  ) {}
-
-  ngOnInit() {
-    //   this.platform.ready().then(() => {
-    //     this.subscription = this.geolocation
-    //       .watchPosition()
-    //       .subscribe(async (response: any) => {
-    //         const coords = {
-    //           lat: response.coords.latitude,
-    //           lng: response.coords.longitude,
-    //         };
-    //         //Update LOCATION
-    //         console.log(coords);
-    //         this.webSocketService.emitEvent('updateLocation', coords);
-    //       });
-    //   });
+  ) {
   }
 
-  ionViewDidEnter() {
-    console.log('UserHunts run');
+  startTracking() {
+
     const positionOptions: PositionOptions = {
       enableHighAccuracy: true,
       timeout: 5000,
-      maximumAge: Infinity,
+      maximumAge: Infinity
     };
 
-    this.subscription = this.geolocation
-      .watchPosition(positionOptions)
-      .subscribe(async (response: any) => {
-        const coords = {
-          lat: response.coords.latitude,
-          lng: response.coords.longitude,
-        };
-        //Update LOCATION
-        console.log(coords);
-        this.ngZone.run(() => {
-          // update the data of the component
-          this.webSocketService.emitEvent('updateLocation', coords);
+    this.subscription = this.geolocation.watchPosition(positionOptions)
+      .pipe(filter((geoposition: Geoposition) => geoposition.coords !== undefined))
+      .subscribe(async (geoposition: Geoposition) => {
+
+        this.authService.userData$.subscribe((userData: User) => {
+
+          const user: string = userData.user;
+
+          if (user) {
+            const coords = {
+              lat: geoposition.coords.latitude,
+              lng: geoposition.coords.longitude,
+              user,
+              origin: 'PP'
+            };
+
+            this.ngZone.run(() => {
+              this.geolocationService.save(coords).subscribe(() => { }, (error) => {
+                console.log(error);
+              });
+            });
+          }
+
         });
       });
   }
+
+  stopTracking() {
+    this.subscription.unsubscribe();
+  }
+
+  ngOnInit() {
+    this.startTracking();
+  }
+
+  ngOnDestroy(): void {
+    this.startTracking();
+  }
+
 }

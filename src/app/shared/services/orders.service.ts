@@ -12,7 +12,7 @@ import { StorageService } from '../../core/services/storage.service';
 import { USER_KEY } from '../../core/services/authentication.service';
 import * as moment from 'moment-timezone';
 import { ResponseAPI } from 'src/app/core/interfaces/http.interface';
-import { API_URL } from 'src/environments/environment';
+import { API_URL , VERSION } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
 export const ORDERS_KEY = 'orders';
 
@@ -87,6 +87,7 @@ export class OrdersService {
         skipLoading: 'true',
       }),
       id_order: idOrder,
+      version : VERSION,
       ...filters,
     };
 
@@ -150,7 +151,7 @@ export class OrdersService {
     }
 
     return this.http
-      .put<ResponseAPI>(`${API_URL}/gos/orders/`, { orders: [order] })
+      .put<ResponseAPI>(`${API_URL}/gos/orders/`, { orders: [order] , version : VERSION })
       .pipe(
         map((response: ResponseAPI) => response.data),
         catchError((err) => {

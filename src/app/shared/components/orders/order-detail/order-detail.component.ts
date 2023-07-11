@@ -1,26 +1,19 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input } from '@angular/core';
 import { Order } from 'src/app/shared/interfaces/order.interface';
-import { OrdersService, ORDER_STATUS } from 'src/app/shared/services/orders.service';
+import { ORDER_STATUS } from 'src/app/shared/services/orders.service';
 
 @Component({
   selector: 'app-order-detail',
   templateUrl: './order-detail.component.html',
   styleUrls: ['./order-detail.component.scss'],
 })
-export class OrderDetailComponent implements OnInit {
-  @Input()order: Order;
-  orderStatus;
+export class OrderDetailComponent {
 
-  constructor(
-    private orderSevice: OrdersService,
-    private actRoute: ActivatedRoute,
-  ) { 
+  @Input() order: Order;
+  public orderStatus: any;
+
+  constructor() {
     this.orderStatus = ORDER_STATUS;
-
-  }
-
-  ngOnInit() {
   }
 
 }

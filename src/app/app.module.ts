@@ -2,24 +2,22 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { IonicStorageModule } from '@ionic/storage-angular';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
+import { DatePipe } from '@angular/common';
+import { Diagnostic } from '@awesome-cordova-plugins/diagnostic/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { DynamicFormControlService } from './shared/services/dynamic-form.service';
-import { DatePipe } from '@angular/common';
-import { Camera } from '@ionic-native/camera/ngx';
 
+import { BackgroundGeolocation } from '@awesome-cordova-plugins/background-geolocation/ngx';
 import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { SERVER_SOCKET } from 'src/environments/environment';
-
-const config: SocketIoConfig = { url: SERVER_SOCKET, options: {} };
 
 
 @NgModule({
@@ -30,10 +28,10 @@ const config: SocketIoConfig = { url: SERVER_SOCKET, options: {} };
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
-    IonicStorageModule.forRoot(),
-    SocketIoModule.forRoot(config)
+    IonicStorageModule.forRoot()
   ],
   providers: [
+    BackgroundGeolocation,
     Geolocation,
     Camera,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -41,8 +39,9 @@ const config: SocketIoConfig = { url: SERVER_SOCKET, options: {} };
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     Network,
     DynamicFormControlService,
-    DatePipe
+    DatePipe,
+    Diagnostic
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
